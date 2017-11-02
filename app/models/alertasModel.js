@@ -24,6 +24,14 @@ module.exports = function (app) {
         alertas.push(new Alerta(cpf));
     };
 
+    alertaModel.findByCpf = function(cpf) {
+        // TODO integrar com o mongo
+        // procurando na lista estática por enquanto;
+        return alertas.filter(function (alerta) {
+           return alerta.cpf === cpf;
+        });
+    };
+
 
     return alertaModel;
 };

@@ -11,7 +11,7 @@ module.exports = function (app) {
         var cpf = req.params.cpf;
         var pessoaProcurada = pessoaServices.buscarPorCpf(cpf);
 
-        if(pessoaProcurada === undefined) {
+        if(!pessoaProcurada) {
             res.status(404);
             var mensagem = 'Pessoa com cpf \'' + cpf + '\' nao encontrada';
             res.send(mensagem);

@@ -9,13 +9,16 @@ module.exports = function (app) {
 
     pessoaServices.buscarPorCpf = function(cpf) {
         var pessoaProcurada = pessoasModel.findByCpf(cpf);
-        return pessoaProcurada;
+        if (pessoaProcurada == null) {
+            return null;
+        }
+        return calcularRisco(pessoaProcurada);
     };
 
     pessoaServices.salvarNova = function (pessoa) {
-        if(pessoaServices.buscarPorCpf(pessoa.cpf) === undefined) {
+        if(!pessoaServices.buscarPorCpf(pessoa.cpf)) {
             var pessoaSalva = pessoasModel.save(pessoa);
-            return pessoaSalva
+            return calcularRisco(pessoaSalva);
         }
         return null;
     };
@@ -24,10 +27,32 @@ module.exports = function (app) {
         var pessoaProcurada = pessoaServices.buscarPorCpf(cpf);
         if (pessoaProcurada != null) {
             alertaModel.save(cpf);
-            return pessoaProcurada;
+            return calcularRisco(pessoaProcurada);
         }
         return null;
     };
+
+    function calcularRisco(pessoa) {
+        var cpf = pessoa.cpf;
+
+        var alertas = alertaModel.findByCpf(cpf);
+
+        if (alertas != null) {
+            var qtdAlertas = alertas.length;
+            if(qtdAlertas === 0) {
+                pessoa.risco = 1;
+            } else if(qtdAlertas <= 3) {
+                pessoa.risco = 2;
+            } else if(qtdAlertas <= 6) {
+                pessoa.risco = 3;
+            } else {
+                pessoa.risco = 4;
+            }
+        } else {
+            pessoa.risco = 0;
+        }
+        return pessoa;
+    }
 
     return pessoaServices;
 };
