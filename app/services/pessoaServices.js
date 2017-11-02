@@ -3,6 +3,7 @@
  */
 module.exports = function (app) {
     var pessoasModel = app.models.pessoasModel;
+    var alertaModel = app.models.alertasModel;
 
     var pessoaServices = {};
 
@@ -15,6 +16,15 @@ module.exports = function (app) {
         if(pessoaServices.buscarPorCpf(pessoa.cpf) === undefined) {
             var pessoaSalva = pessoasModel.save(pessoa);
             return pessoaSalva
+        }
+        return null;
+    };
+
+    pessoaServices.gerarAlerta = function (cpf) {
+        var pessoaProcurada = pessoaServices.buscarPorCpf(cpf);
+        if (pessoaProcurada != null) {
+            alertaModel.save(cpf);
+            return pessoaProcurada;
         }
         return null;
     };
