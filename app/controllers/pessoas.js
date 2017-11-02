@@ -42,7 +42,21 @@ module.exports = function (app) {
 
         if (pessoa !== null) {
             res.status(200);
-            res.json(pessoa)
+            res.json(pessoa);
+            return;
+        }
+
+        res.status(400);
+        res.send('Nao existe pessoa com o CPF ' + cpf);
+    };
+
+    controller.negativar = function (req, res) {
+        var cpf = req.params.cpf;
+        var pessoa = pessoaServices.negativar(cpf);
+
+        if (pessoa !== null) {
+            res.status(200);
+            res.json(pessoa);
             return;
         }
 

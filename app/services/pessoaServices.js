@@ -4,6 +4,7 @@
 module.exports = function (app) {
     var pessoasModel = app.models.pessoasModel;
     var alertaModel = app.models.alertasModel;
+    var negativacaoModel = app.models.negativacaoModel;
 
     var pessoaServices = {};
 
@@ -32,8 +33,23 @@ module.exports = function (app) {
         return null;
     };
 
+    pessoaServices.negativar = function (cpf) {
+        var pessoaProcurada = pessoaServices.buscarPorCpf(cpf);
+        if (pessoaProcurada != null) {
+            negativacaoModel.save(cpf);
+            return calcularRisco(pessoaProcurada);
+        }
+        return null;
+    };
+
     function calcularRisco(pessoa) {
         var cpf = pessoa.cpf;
+
+        var negativado = negativacaoModel.findByCpf(cpf);
+        if (negativado && negativado.length !== 0) {
+            pessoa.risco = 5;
+            return pessoa;
+        }
 
         var alertas = alertaModel.findByCpf(cpf);
 

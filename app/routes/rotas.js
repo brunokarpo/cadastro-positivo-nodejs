@@ -10,4 +10,5 @@ module.exports = function (app) {
     app.get('/api/cadastro-positivo/pessoa/:cpf', pessoaController.buscar);
     app.post('/api/cadastro-positivo/pessoa', pessoaController.criarNova);
     app.post('/api/cadastro-positivo/pessoa/:cpf/alerta', pessoaController.alertar);
+    app.post('/api/cadastro-positivo/pessoa/:cpf/negativa', pessoaController.negativar);
 };
