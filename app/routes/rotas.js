@@ -8,4 +8,5 @@ module.exports = function (app) {
 
     app.get('/', pessoaController.index);
     app.get('/api/cadastro-positivo/pessoa/:cpf', pessoaController.buscar);
+    app.post('/api/cadastro-positivo/pessoa', pessoaController.criarNova);
 };

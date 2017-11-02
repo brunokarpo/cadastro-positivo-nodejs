@@ -11,5 +11,13 @@ module.exports = function (app) {
         return pessoaProcurada;
     };
 
+    pessoaServices.salvarNova = function (pessoa) {
+        if(pessoaServices.buscarPorCpf(pessoa.cpf) === undefined) {
+            var pessoaSalva = pessoasModel.save(pessoa);
+            return pessoaSalva
+        }
+        return null;
+    };
+
     return pessoaServices;
-}
+};

@@ -19,7 +19,20 @@ module.exports = function (app) {
         }
 
         res.json(pessoaProcurada);
-    }
+    };
+
+    controller.criarNova = function (req, res) {
+        var pessoaNova = req.body;
+        pessoaNova = pessoaServices.salvarNova(pessoaNova);
+
+        if (pessoaNova !== null) {
+            res.sendStatus(200);
+            return;
+        }
+
+        res.status(400);
+        res.send('Ja existe pessoa cadastrada com esse CPF');
+    };
 
     return controller;
-}
+};

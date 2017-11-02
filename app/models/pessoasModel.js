@@ -28,10 +28,17 @@ module.exports = function (app) {
 
         var pessoaProcurada = pessoas.filter(function (pessoa) {
             return pessoa.cpf === cpf;
-        })[0]
+        })[0];
 
         return pessoaProcurada;
-    }
+    };
+
+    pessoasModel.save = function (pessoa) {
+        // Colocando na lista dinâmica por enquanto.
+        // TODO: mandar para o Mongo DB
+        pessoas.push(pessoa);
+        return pessoa;
+    };
 
     return pessoasModel;
-}
+};
