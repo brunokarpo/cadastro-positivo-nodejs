@@ -14,6 +14,7 @@ module.exports = function () {
     app.use(allowCors);
 
     load('models', {cwd: 'app'})
+        .then('repositorios')
         .then('services')
         .then('controllers')
         .then('routes')

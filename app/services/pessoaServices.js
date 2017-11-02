@@ -2,9 +2,9 @@
  * Created by bruno on 02/11/17.
  */
 module.exports = function (app) {
-    var pessoasModel = app.models.pessoasModel;
-    var alertaModel = app.models.alertasModel;
-    var negativacaoModel = app.models.negativacaoModel;
+    var pessoasModel = app.repositorios.pessoaRepositorio;
+    var alertaModel = app.repositorios.alertaRepositorio;
+    var negativacaoModel = app.repositorios.negativacaoRepositorio;
 
     var pessoaServices = {};
 

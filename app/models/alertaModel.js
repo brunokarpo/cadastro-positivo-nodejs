@@ -15,5 +15,5 @@ module.exports = function() {
         }
     });
 
-    return mongoose.model('Negativacao', schema);
+    return mongoose.model('Alerta', schema);
 };

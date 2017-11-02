@@ -4,16 +4,28 @@
 var mongoose = require('mongoose');
 
 module.exports = function() {
+
     var schema = mongoose.Schema({
-        cpf: {
+        nome: {
             type: 'String',
             required: true
         },
-        timestamp: {
+        cpf: {
+            type: 'String',
+            required: true,
+            index: {
+                unique: true
+            }
+        },
+        sexo: {
+            type: 'String',
+            required: true
+        },
+        nascimento: {
             type: 'Date',
             required: true
         }
     });
 
-    return mongoose.model('Negativacao', schema);
+    return mongoose.model('Pessoa', schema);
 };
