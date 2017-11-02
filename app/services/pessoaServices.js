@@ -2,15 +2,15 @@
  * Created by bruno on 02/11/17.
  */
 module.exports = function (app) {
-    var pessoasModel = app.repositorios.pessoaRepositorio;
-    var alertaModel = app.repositorios.alertaRepositorio;
-    var negativacaoModel = app.repositorios.negativacaoRepositorio;
+    var pessoaRepositorio = app.repositorios.pessoaRepositorio;
+    var alertaRepositorio = app.repositorios.alertaRepositorio;
+    var negativacaoRepositorio = app.repositorios.negativacaoRepositorio;
 
     var pessoaServices = {};
 
     pessoaServices.buscarPorCpf = function(cpf) {
-        var pessoaProcurada = pessoasModel.findByCpf(cpf);
-        if (pessoaProcurada == null) {
+        var pessoaProcurada = pessoaRepositorio.findByCpf(cpf);
+        if (!pessoaProcurada) {
             return null;
         }
         return calcularRisco(pessoaProcurada);
@@ -18,7 +18,7 @@ module.exports = function (app) {
 
     pessoaServices.salvarNova = function (pessoa) {
         if(!pessoaServices.buscarPorCpf(pessoa.cpf)) {
-            var pessoaSalva = pessoasModel.save(pessoa);
+            var pessoaSalva = pessoaRepositorio.save(pessoa);
             return calcularRisco(pessoaSalva);
         }
         return null;
@@ -27,7 +27,7 @@ module.exports = function (app) {
     pessoaServices.gerarAlerta = function (cpf) {
         var pessoaProcurada = pessoaServices.buscarPorCpf(cpf);
         if (pessoaProcurada != null) {
-            alertaModel.save(cpf);
+            alertaRepositorio.save(cpf);
             return calcularRisco(pessoaProcurada);
         }
         return null;
@@ -36,7 +36,7 @@ module.exports = function (app) {
     pessoaServices.negativar = function (cpf) {
         var pessoaProcurada = pessoaServices.buscarPorCpf(cpf);
         if (pessoaProcurada != null) {
-            negativacaoModel.save(cpf);
+            negativacaoRepositorio.save(cpf);
             return calcularRisco(pessoaProcurada);
         }
         return null;
@@ -45,15 +45,15 @@ module.exports = function (app) {
     function calcularRisco(pessoa) {
         var cpf = pessoa.cpf;
 
-        var negativado = negativacaoModel.findByCpf(cpf);
+        var negativado = negativacaoRepositorio.findByCpf(cpf);
         if (negativado && negativado.length !== 0) {
             pessoa.risco = 5;
             return pessoa;
         }
 
-        var alertas = alertaModel.findByCpf(cpf);
+        var alertas = alertaRepositorio.findByCpf(cpf);
 
-        if (alertas != null) {
+        if (alertas) {
             var qtdAlertas = alertas.length;
             if(qtdAlertas === 0) {
                 pessoa.risco = 1;

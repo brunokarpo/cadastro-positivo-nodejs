@@ -15,30 +15,30 @@ module.exports = function (app) {
     var pessoasModel = {};
 
     pessoasModel.findByCpf = function (cpf) {
-
-        var criterio = {"cpf": cpf};
+        var criterio = {cpf: cpf};
+        var pessoaEncontrada = null;
         Pessoa.find(criterio).exec()
             .then(
-                function (pessoa) {
-                    return pessoa;
+                function (pessoas) {
+                    console.log('Retornado do mongo', pessoas);
+                    return pessoas[0];
                 },
                 function (erro) {
                     console.error(erro);
                     return null;
                 }
             );
+
+        console.log('Objeto retornado pela funcao', pessoaEncontrada);
+        return pessoaEncontrada;
     };
 
     pessoasModel.save = function (pessoa) {
         var pessoaModel = new Pessoa(pessoa);
-        pessoaModel.save(function (erro, pessoa) {
-            if(erro) {
-                console.error(erro);
-                return null;
-            } else {
-                return pessoaModel;
-            }
-        })
+        pessoaModel.save(function(err){
+            if(err) return null;
+        });
+        return pessoa;
     };
 
     return pessoasModel;

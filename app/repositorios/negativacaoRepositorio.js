@@ -16,13 +16,8 @@ module.exports = function (app) {
         var negativacao = new Alerta(cpf);
         var negativacaoModel = new NegativacaoModel(negativacao);
 
-        negativacaoModel.save(function (erro, negativacao) {
-            if(erro) {
-                console.error(erro);
-                return null;
-            } else {
-                return negativacao;
-            }
+        negativacaoModel.save(function(err){
+            if(err) return null;
         });
     };
 

@@ -16,13 +16,8 @@ module.exports = function (app) {
         var alerta = new Alerta(cpf);
         var alertaModel = new AlertaModel(alerta);
 
-        alertaModel.save(function (erro, alerta) {
-            if(erro) {
-                console.error(erro);
-                return null;
-            } else {
-                return alerta;
-            }
+        alertaModel.save(function (err) {
+            if(err) return null;
         });
     };
 
