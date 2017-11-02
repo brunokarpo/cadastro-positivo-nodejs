@@ -1,6 +1,8 @@
 const express = require('express');
 const load = require('express-load');
 
+const allowCors = require('./cors');
+
 module.exports = function () {
     var app = express();
     var rotas = require('../app/routes/rotas');
@@ -9,6 +11,7 @@ module.exports = function () {
     app.set('port', 3000);
 
     app.use(bodyParser.json());
+    app.use(allowCors);
 
     load('models', {cwd: 'app'})
         .then('services')
