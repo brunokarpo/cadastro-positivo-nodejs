@@ -4,6 +4,7 @@
   "description": "Sistema back-end para cadastro positivo (Fundamentos de programação Back-End)",
   "main": "index.js",
   "scripts": {
+    "dev": "nodemon",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
@@ -13,5 +14,8 @@
     "express": "^4.16.2",
     "express-load": "^1.1.16",
     "mongoose": "^4.12.6"
+  },
+  "devDependencies": {
+    "nodemon": "^1.12.1"
   }
 }

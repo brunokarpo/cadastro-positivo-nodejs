@@ -5,19 +5,23 @@ module.exports = function (app) {
     var pessoaRepositorio = app.repositorios.pessoaRepositorio;
     var alertaRepositorio = app.repositorios.alertaRepositorio;
     var negativacaoRepositorio = app.repositorios.negativacaoRepositorio;
-
     var pessoaServices = {};
 
-    pessoaServices.buscarPorCpf = function(cpf) {
-        var pessoaProcurada = pessoaRepositorio.findByCpf(cpf);
-        if (!pessoaProcurada) {
-            return null;
-        }
-        return calcularRisco(pessoaProcurada);
+    pessoaServices.buscarPorCpf = function (cpf) {
+        return new Promise(function (resolve, reject) {
+            pessoaRepositorio.findByCpf(cpf).then(
+                function (result) {
+                    resolve(calcularRisco(result));
+                },
+                function () {
+                    reject(null);
+                }
+            );
+        });
     };
 
     pessoaServices.salvarNova = function (pessoa) {
-        if(!pessoaServices.buscarPorCpf(pessoa.cpf)) {
+        if (!pessoaServices.buscarPorCpf(pessoa.cpf)) {
             var pessoaSalva = pessoaRepositorio.save(pessoa);
             return calcularRisco(pessoaSalva);
         }
@@ -25,49 +29,80 @@ module.exports = function (app) {
     };
 
     pessoaServices.gerarAlerta = function (cpf) {
-        var pessoaProcurada = pessoaServices.buscarPorCpf(cpf);
-        if (pessoaProcurada != null) {
-            alertaRepositorio.save(cpf);
-            return calcularRisco(pessoaProcurada);
-        }
-        return null;
+        return new Promise(function (resolve, reject) {
+            pessoaServices.buscarPorCpf(cpf).then(function (pessoaProcurada) {
+                if (pessoaProcurada) {
+                    alertaRepositorio.save(cpf);
+                    resolve(calcularRisco(pessoaProcurada));
+                }
+
+                reject(null);
+            });
+        });
     };
 
     pessoaServices.negativar = function (cpf) {
-        var pessoaProcurada = pessoaServices.buscarPorCpf(cpf);
-        if (pessoaProcurada != null) {
-            negativacaoRepositorio.save(cpf);
-            return calcularRisco(pessoaProcurada);
-        }
-        return null;
+        return new Promise(function (resolve, reject) {
+            pessoaServices.buscarPorCpf(cpf).then(function (pessoaProcurada) {
+                if (pessoaProcurada) {
+                    negativacaoRepositorio.save(cpf);
+                    resolve(calcularRisco(pessoaProcurada));
+                }
+
+                reject(null);
+            });
+        });
     };
 
     function calcularRisco(pessoa) {
-        var cpf = pessoa.cpf;
+        return new Promise(function (resolve, reject) {
+            var cpf = pessoa.cpf;
 
-        var negativado = negativacaoRepositorio.findByCpf(cpf);
-        if (negativado && negativado.length !== 0) {
-            pessoa.risco = 5;
-            return pessoa;
-        }
+            var retorno = {};
+            retorno.id = pessoa.id;
+            retorno.nome = pessoa.nome;
+            retorno.cpf = pessoa.cpf;
+            retorno.sexo = pessoa.sexo;
+            retorno.nascimento = pessoa.nascimento;
 
-        var alertas = alertaRepositorio.findByCpf(cpf);
+            negativacaoRepositorio.findByCpf(cpf).then(
+                function (negativado) {
+                    if (negativado && negativado.length !== 0) {
+                        retorno.risco = 5;
+                        resolve(retorno);
+                    }
 
-        if (alertas) {
-            var qtdAlertas = alertas.length;
-            if(qtdAlertas === 0) {
-                pessoa.risco = 1;
-            } else if(qtdAlertas <= 3) {
-                pessoa.risco = 2;
-            } else if(qtdAlertas <= 6) {
-                pessoa.risco = 3;
-            } else {
-                pessoa.risco = 4;
-            }
-        } else {
-            pessoa.risco = 0;
-        }
-        return pessoa;
+                    alertaRepositorio.findByCpf(cpf).then(
+                        function (alertas) {
+                            console.log('alertas');
+                            console.log(alertas);
+
+                            if (alertas) {
+                                var qtdAlertas = alertas.length;
+
+                                if (qtdAlertas === 0) {
+                                    retorno.risco = 1;
+
+                                } else if (qtdAlertas <= 3) {
+                                    retorno.risco = 2;
+
+                                } else if (qtdAlertas <= 6) {
+                                    retorno.risco = 3;
+
+                                } else {
+                                    retorno.risco = 4;
+                                }
+
+                            } else {
+                                retorno.risco = 0;
+                            }
+
+                            resolve(retorno);
+                        }
+                    );
+                }
+            );
+        });
     }
 
     return pessoaServices;

@@ -9,16 +9,17 @@ module.exports = function (app) {
 
     controller.buscar = function (req, res) {
         var cpf = req.params.cpf;
-        var pessoaProcurada = pessoaServices.buscarPorCpf(cpf);
 
-        if(!pessoaProcurada) {
-            res.status(404);
-            var mensagem = 'Pessoa com cpf \'' + cpf + '\' nao encontrada';
-            res.send(mensagem);
-            return;
-        }
+        pessoaServices.buscarPorCpf(cpf).then(function (pessoaProcurada) {
+            if (!pessoaProcurada) {
+                res.status(404);
+                var mensagem = 'Pessoa com cpf \'' + cpf + '\' nao encontrada';
+                res.send(mensagem);
+                return;
+            }
 
-        res.json(pessoaProcurada);
+            res.json(pessoaProcurada);
+        });
     };
 
     controller.criarNova = function (req, res) {
@@ -27,7 +28,7 @@ module.exports = function (app) {
 
         if (pessoaNova !== null) {
             res.status(200);
-            res.json(pessoaNova)
+            res.json(pessoaNova);
             return;
         }
 
@@ -35,33 +36,34 @@ module.exports = function (app) {
         res.send('Ja existe pessoa cadastrada com esse CPF');
     };
 
-
     controller.alertar = function (req, res) {
         var cpf = req.params.cpf;
-        var pessoa = pessoaServices.gerarAlerta(cpf);
 
-        if (pessoa !== null) {
-            res.status(200);
-            res.json(pessoa);
-            return;
-        }
+        pessoaServices.gerarAlerta(cpf).then(function (pessoa) {
+            if (pessoa) {
+                res.status(200);
+                res.json(pessoa);
+                return;
+            }
 
-        res.status(400);
-        res.send('Nao existe pessoa com o CPF ' + cpf);
+            res.status(400);
+            res.send('Nao existe pessoa com o CPF ' + cpf);
+        });
     };
 
     controller.negativar = function (req, res) {
         var cpf = req.params.cpf;
-        var pessoa = pessoaServices.negativar(cpf);
 
-        if (pessoa !== null) {
-            res.status(200);
-            res.json(pessoa);
-            return;
-        }
+        pessoaServices.negativar(cpf).then(function (pessoa) {
+            if (pessoa) {
+                res.status(200);
+                res.json(pessoa);
+                return;
+            }
 
-        res.status(400);
-        res.send('Nao existe pessoa com o CPF ' + cpf);
+            res.status(400);
+            res.send('Nao existe pessoa com o CPF ' + cpf);
+        });
     };
 
     return controller;
