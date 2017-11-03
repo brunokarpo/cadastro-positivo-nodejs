@@ -1,0 +1,67 @@
+{
+	"variables": [],
+	"info": {
+		"name": "Sistema-cadastro-positivo",
+		"_postman_id": "2c0b199f-6a8e-3629-6ea5-719964e189c3",
+		"description": "",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Procurar pessoa pelo CPF",
+			"request": {
+				"url": "http://localhost:3000/api/cadastro-positivo/pessoa/92385830213",
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Salvar nova pessoa.",
+			"request": {
+				"url": "localhost:3000/api/cadastro-positivo/pessoa",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"nome\": \"Emanuel Rafael Pedro Henrique Nascimento\",\n    \"cpf\": \"92385830213\",\n    \"sexo\": \"MASCULINO\",\n    \"nascimento\": \"1995-03-03\"\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Gerar alerta para uma pessoa.",
+			"request": {
+				"url": "http://localhost:3000/api/cadastro-positivo/pessoa/92385830213/alerta",
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Negativar pessoa",
+			"request": {
+				"url": "http://localhost:3000/api/cadastro-positivo/pessoa/92385830213/negativa",
+				"method": "POST",
+				"header": [],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		}
+	]
+}
