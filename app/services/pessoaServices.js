@@ -21,11 +21,18 @@ module.exports = function (app) {
     };
 
     pessoaServices.salvarNova = function (pessoa) {
-        if (!pessoaServices.buscarPorCpf(pessoa.cpf)) {
-            var pessoaSalva = pessoaRepositorio.save(pessoa);
-            return calcularRisco(pessoaSalva);
-        }
-        return null;
+        return new Promise(function (resolve, reject) {
+            pessoaServices.buscarPorCpf(pessoa.cpf).then(
+                function () {
+                    // pessoa já cadastrada
+                    resolve(null);
+                },
+                function () {
+                    pessoaRepositorio.save(pessoa);
+                    resolve(calcularRisco(pessoa));
+                }
+            );
+        });
     };
 
     pessoaServices.gerarAlerta = function (cpf) {
@@ -64,6 +71,7 @@ module.exports = function (app) {
             retorno.cpf = pessoa.cpf;
             retorno.sexo = pessoa.sexo;
             retorno.nascimento = pessoa.nascimento;
+            retorno.risco = 0;
 
             negativacaoRepositorio.findByCpf(cpf).then(
                 function (negativado) {
@@ -74,8 +82,6 @@ module.exports = function (app) {
 
                     alertaRepositorio.findByCpf(cpf).then(
                         function (alertas) {
-                            console.log('alertas');
-                            console.log(alertas);
 
                             if (alertas) {
                                 var qtdAlertas = alertas.length;
@@ -93,8 +99,6 @@ module.exports = function (app) {
                                     retorno.risco = 4;
                                 }
 
-                            } else {
-                                retorno.risco = 0;
                             }
 
                             resolve(retorno);

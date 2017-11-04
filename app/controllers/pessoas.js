@@ -24,16 +24,17 @@ module.exports = function (app) {
 
     controller.criarNova = function (req, res) {
         var pessoaNova = req.body;
-        pessoaNova = pessoaServices.salvarNova(pessoaNova);
 
-        if (pessoaNova !== null) {
-            res.status(200);
-            res.json(pessoaNova);
-            return;
-        }
+        pessoaServices.salvarNova(pessoaNova).then(function (pessoa) {
+            if (pessoa) {
+                res.status(200);
+                res.json(pessoaNova);
+                return;
+            }
 
-        res.status(400);
-        res.send('Ja existe pessoa cadastrada com esse CPF');
+            res.status(400);
+            res.send('Ja existe pessoa cadastrada com esse CPF');
+        });
     };
 
     controller.alertar = function (req, res) {
